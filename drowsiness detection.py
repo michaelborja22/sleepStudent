@@ -4,14 +4,16 @@ from keras.models import load_model
 import numpy as np
 from pygame import mixer
 import time
+import os
 
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 mixer.init()
-sound = mixer.Sound('D:/University/Noveno Semestre/Minería de Datos/Proyecto/Drowsiness detection/alarm.wav')
+sound = mixer.Sound('alarm.wav')
 
-face = cv2.CascadeClassifier('C:/Users/ASUS/Documents/haarcascade_frontalface_alt.xml')
-leye = cv2.CascadeClassifier('C:/Users/ASUS/Documents/haarcascade_lefteye_2splits.xml')
-reye = cv2.CascadeClassifier('C:/Users/ASUS/Documents/haarcascade_righteye_2splits.xml')
+face = cv2.CascadeClassifier('haar cascade files/haarcascade_frontalface_alt.xml')
+leye = cv2.CascadeClassifier('haar cascade files/haarcascade_lefteye_2splits.xml')
+reye = cv2.CascadeClassifier('haar cascade files/haarcascade_righteye_2splits.xml')
 
 
 
