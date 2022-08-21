@@ -1,3 +1,4 @@
+from tkinter import FALSE
 import cv2
 import os
 from keras.models import load_model
@@ -28,8 +29,10 @@ score=0
 thicc=2
 rpred=[99]
 lpred=[99]
+reproduciendo=False
 
 while(True):
+    
     ret, frame = cap.read()
     height,width = frame.shape[:2] 
 
@@ -90,7 +93,15 @@ while(True):
         #person is feeling sleepy so we beep the alarm
         cv2.imwrite(os.path.join(path,'image.jpg'),frame)
         try:
-            sound.play()
+            
+            if(reproduciendo == FALSE):
+                print("REPRODUCIENDO")
+                sound.play()
+                reproduciendo=True
+            else:
+                print("YA se esta reproduciendo")
+
+
             
         except:  # isplaying = False
             pass
