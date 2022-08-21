@@ -7,11 +7,14 @@ from pygame import mixer
 import time
 import os
 
+#Ubicar la ejecución en la carpeta actual del proyecto
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
+#Para reproducir la alarma cuando se duermen
 mixer.init()
 sound = mixer.Sound('alarm.wav')
 
+#Utilizamos opencv con cascadeClassifier 
 face = cv2.CascadeClassifier('haar cascade files/haarcascade_frontalface_alt.xml')
 leye = cv2.CascadeClassifier('haar cascade files/haarcascade_lefteye_2splits.xml')
 reye = cv2.CascadeClassifier('haar cascade files/haarcascade_righteye_2splits.xml')
@@ -36,7 +39,7 @@ while(True):
     ret, frame = cap.read()
     height,width = frame.shape[:2] 
 
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    
     
     faces = face.detectMultiScale(gray,minNeighbors=5,scaleFactor=1.1,minSize=(25,25))
     left_eye = leye.detectMultiScale(gray)
