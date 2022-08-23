@@ -1,9 +1,21 @@
+from glob import glob
+import imp
 import tkinter as tk
+import cv2
 from PIL import Image,ImageTk
+import os
+import imutils
+#Ubicar la ejecución en la carpeta actual del proyecto
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
+video= cv2.VideoCapture(0)
+
+
 class Editor(tk.Tk):
+
+
     def __init__(self):
         super().__init__()
-
+        
         self.iconbitmap('imagenes/icon.ico')
         self.title('Detección de Somnolencia')
         # Configuración tamaño mínimo de la venta
@@ -36,6 +48,29 @@ class Editor(tk.Tk):
         boton_sonido = tk.Button(self.ventana_nuevo,text='SUBIR').place(x=25,y=35)
         self.ventana_nuevo.mainloop()
 
+    
+
+    def iniciar(self):
+        print("HOLA")
+        global video
+        
+        contador=0
+        ret,frame = video.read()
+        contador = contador+1
+        print(contador)
+        frame = imutils.resize(frame, width=640)
+        frame = cv2.cvtColor(frame,cv2.COLOR_BGR2RGB)
+        img = Image.fromarray(frame)
+        image= ImageTk.PhotoImage(image=img)
+        etiq_de_video = tk.Label(self, bg="black")
+        etiq_de_video.place(x=187,y=75)
+        etiq_de_video.configure(image=image)
+        etiq_de_video.image = image
+        etiq_de_video.after(10,self.iniciar)
+       
+        
+
+
 
 
     def _crear_componentes(self):
@@ -61,6 +96,12 @@ class Editor(tk.Tk):
         self.imag5 = ImageTk.PhotoImage(Image.open('imagenes/sleep.jpg'))
         lbl = tk.Label(self.campo_video, image=self.imag5).place(x=0, y=0)
         self.campo_video.grid(row=0, column=1, sticky='nswe')
+        self.iniciar()
+        
+        
+
+    
+
 
 
 
