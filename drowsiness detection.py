@@ -42,7 +42,7 @@ tiempo  = 0
 
 lbl=['Close','Open']
 
-model = load_model('D:/University/Noveno Semestre/Minería de Datos/Proyecto/Drowsiness detection/models/cnncat2.h5')
+model = load_model('models/cnncat2.h5')
 path = os.getcwd()
 cap = cv2.VideoCapture(0)
 font = cv2.FONT_HERSHEY_COMPLEX_SMALL
