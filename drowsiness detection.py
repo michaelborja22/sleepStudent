@@ -14,18 +14,13 @@ import tkinter as tk
 import imutils
 
 #Ubicar la ejecución en la carpeta actual del proyecto
+print("UBICADO")
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
-
-
-ventana = tk.Tk()
-ventana.geometry("1000x680+200+10")
-ventana.title("tkinder-opencv")
-ventana.resizable(width=False,height=False)
-fondo = tk.PhotoImage(file="marco.png")
-fondo1= tk.Label(ventana,image=fondo).place (x=0,y=0,relwidth=1,relheight=1)
 video= cv2.VideoCapture(0)
-etiq_de_video = tk.Label(ventana, bg="black")
-etiq_de_video.place(x=187,y=75)
+
+
+
+
 tiempo = 0
 
 
@@ -54,110 +49,185 @@ rpred=[99]
 lpred=[99]
 reproduciendo=False
 
-def iniciar():
-    global rpred
-    global lpred
-    ret, frame = cap.read()
-    height,width = frame.shape[:2] 
 
-    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    
-    faces = face.detectMultiScale(gray,minNeighbors=5,scaleFactor=1.1,minSize=(25,25))
-    left_eye = leye.detectMultiScale(gray)
-    right_eye =  reye.detectMultiScale(gray)
 
-    cv2.rectangle(frame, (0,height-50) , (200,height) , (0,0,0) , thickness=cv2.FILLED )
+class Editor(tk.Tk):
 
-    for (x,y,w,h) in faces:
-        cv2.rectangle(frame, (x,y) , (x+w,y+h) , (100,100,100) , 1 )
 
-    for (x,y,w,h) in right_eye:
-        r_eye=frame[y:y+h,x:x+w]
-        global count
-        count=count+1
-        r_eye = cv2.cvtColor(r_eye,cv2.COLOR_BGR2GRAY)
-        r_eye = cv2.resize(r_eye,(24,24))
-        r_eye= r_eye/255
-        r_eye=  r_eye.reshape(24,24,-1)
-        r_eye = np.expand_dims(r_eye,axis=0)
-        rpred = model.predict_classes(r_eye)
-        if(rpred[0]==1):
-            lbl='Open' 
-        if(rpred[0]==0):
-            lbl='Closed'
-        break
-
-    for (x,y,w,h) in left_eye:
-        l_eye=frame[y:y+h,x:x+w]
-
+    def __init__(self):
+        super().__init__()
         
-        count=count+1
-        l_eye = cv2.cvtColor(l_eye,cv2.COLOR_BGR2GRAY)  
-        l_eye = cv2.resize(l_eye,(24,24))
-        l_eye= l_eye/255
-        l_eye=l_eye.reshape(24,24,-1)
-        l_eye = np.expand_dims(l_eye,axis=0)
-        lpred = model.predict_classes(l_eye)
-        if(lpred[0]==1):
-            lbl='Open'   
-        if(lpred[0]==0):
-            lbl='Closed'
-        break
-    global score
-    
-    
-    if(rpred[0]==0 and lpred[0]==0):
-        
-        score=score+1
-        cv2.putText(frame,"Closed",(10,height-20), font, 1,(255,255,255),1,cv2.LINE_AA)
-    # if(rpred[0]==1 or lpred[0]==1):
-    else:
-        
-        score=score-1
-        cv2.putText(frame,"Open",(10,height-20), font, 1,(255,255,255),1,cv2.LINE_AA)
-    
-        
-    if(score<0):
-        global reproduciendo
-        reproduciendo=False
-        score=0   
-    cv2.putText(frame,'Score:'+str(score),(100,height-20), font, 1,(255,255,255),1,cv2.LINE_AA)
-    global thicc
-    
-    if(score>15):
-        #person is feeling sleepy so we beep the alarm
-        cv2.imwrite(os.path.join(path,'image.jpg'),frame)
-        try:
-            print("INTENTANDO")
-            if(reproduciendo == False):
-                print("REPRODUCIENDO")
-                sound.play()
-                
-                reproduciendo=True
-            else:
-                print("Ya se esta reproduciendo")
+        self.iconbitmap('imagenes/icon.ico')
+        self.title('Detección de Somnolencia')
+        # Configuración tamaño mínimo de la venta
+        self.rowconfigure(0, minsize=600, weight=1)
+        # Configuración mínima de la segunda columna
+        self.columnconfigure(1, minsize=600, weight=1)
+        # Atributo de campo de imagen
+        # Creación de componentes
+        Boton1 = tk.Button(self,text='Iniciar')
+        self._crear_componentes()
 
+    def bienvenido(self):
+        self.ventana_nuevo = tk.Toplevel()
+        self.ventana_nuevo.title('Bienvenido')
+        self.ventana_nuevo.geometry('600x338')
+        imag4 = ImageTk.PhotoImage(Image.open('imagenes/BIENVENIDO.jpg'))
+        lbl = tk.Label(self.ventana_nuevo, image=imag4).place(x=0, y=0)
+        self.ventana_nuevo.mainloop()
 
+    def ventana_sonido(self):
+        self.ventana_nuevo = tk.Toplevel()
+        self.ventana_nuevo.title('Ajuste de Sonido')
+        self.ventana_nuevo.iconbitmap('imagenes/son.ico')
+        self.ventana_nuevo.geometry('560x287')
+        imag4 = ImageTk.PhotoImage(Image.open('imagenes/fondosonido.jpg'))
+        lbl= tk.Label(self.ventana_nuevo,image=imag4).place(x=0, y=0)
+        lbl = tk.Label(self.ventana_nuevo, text='Cambiar sonido',bg='pink').place(x=0, y=0)
+        #entrada para sonido
+        e1 = tk.Entry(self.ventana_nuevo, bg='gray').place(x=25 , y = 40)
+        boton_sonido = tk.Button(self.ventana_nuevo,text='SUBIR').place(x=25,y=35)
+        self.ventana_nuevo.mainloop()
+
+    
+
+    def iniciar(self):
+        print("HOLA")
+        global rpred
+        global lpred
+        global video
+        ret, frame = video.read()
+        height,width = frame.shape[:2] 
+
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         
-        except:  # isplaying = False
-            pass
-        if(thicc<16):
-            thicc= thicc+2
+        faces = face.detectMultiScale(gray,minNeighbors=5,scaleFactor=1.1,minSize=(25,25))
+        left_eye = leye.detectMultiScale(gray)
+        right_eye =  reye.detectMultiScale(gray)
+
+        cv2.rectangle(frame, (0,height-50) , (200,height) , (0,0,0) , thickness=cv2.FILLED )
+
+        for (x,y,w,h) in faces:
+            cv2.rectangle(frame, (x,y) , (x+w,y+h) , (100,100,100) , 1 )
+
+        for (x,y,w,h) in right_eye:
+            r_eye=frame[y:y+h,x:x+w]
+            global count
+            count=count+1
+            r_eye = cv2.cvtColor(r_eye,cv2.COLOR_BGR2GRAY)
+            r_eye = cv2.resize(r_eye,(24,24))
+            r_eye= r_eye/255
+            r_eye=  r_eye.reshape(24,24,-1)
+            r_eye = np.expand_dims(r_eye,axis=0)
+            rpred = model.predict_classes(r_eye)
+            if(rpred[0]==1):
+                lbl='Open' 
+            if(rpred[0]==0):
+                lbl='Closed'
+            break
+
+        for (x,y,w,h) in left_eye:
+            l_eye=frame[y:y+h,x:x+w]
+
+            
+            count=count+1
+            l_eye = cv2.cvtColor(l_eye,cv2.COLOR_BGR2GRAY)  
+            l_eye = cv2.resize(l_eye,(24,24))
+            l_eye= l_eye/255
+            l_eye=l_eye.reshape(24,24,-1)
+            l_eye = np.expand_dims(l_eye,axis=0)
+            lpred = model.predict_classes(l_eye)
+            if(lpred[0]==1):
+                lbl='Open'   
+            if(lpred[0]==0):
+                lbl='Closed'
+            break
+
+        global score
+        if(rpred[0]==0 and lpred[0]==0):
+            
+            score=score+1
+            cv2.putText(frame,"Closed",(10,height-20), font, 1,(255,255,255),1,cv2.LINE_AA)
+        # if(rpred[0]==1 or lpred[0]==1):
         else:
-            thicc=thicc-2
-            if(thicc<2):
-                thicc=2
-        cv2.rectangle(frame,(0,0),(width,height),(0,0,255),thicc) 
-    
-    frame = imutils.resize(frame, width=640)
-    frame = cv2.cvtColor(frame,cv2.COLOR_BGR2RGB)
-    img = Image.fromarray(frame)
-    image= ImageTk.PhotoImage(image=img)
-    etiq_de_video.configure(image=image)
-    etiq_de_video.image = image
-    etiq_de_video.after(10,iniciar)
+            
+            score=score-1
+            cv2.putText(frame,"Open",(10,height-20), font, 1,(255,255,255),1,cv2.LINE_AA)
         
-iniciar()
-ventana.mainloop()
-cap.release()
-cv2.destroyAllWindows()
+            
+        if(score<0):
+            global reproduciendo
+            reproduciendo=False
+            score=0   
+        cv2.putText(frame,'Score:'+str(score),(100,height-20), font, 1,(255,255,255),1,cv2.LINE_AA)
+        global thicc
+        
+        if(score>15):
+            #person is feeling sleepy so we beep the alarm
+            cv2.imwrite(os.path.join(path,'image.jpg'),frame)
+            try:
+                print("INTENTANDO")
+                if(reproduciendo == False):
+                    print("REPRODUCIENDO")
+                    sound.play()
+                    
+                    reproduciendo=True
+                else:
+                    print("Ya se esta reproduciendo")
+
+
+            
+            except:  # isplaying = False
+                pass
+            if(thicc<16):
+                thicc= thicc+2
+            else:
+                thicc=thicc-2
+                if(thicc<2):
+                    thicc=2
+            cv2.rectangle(frame,(0,0),(width,height),(0,0,255),thicc) 
+        
+        frame = imutils.resize(frame, width=640)
+        frame = cv2.cvtColor(frame,cv2.COLOR_BGR2RGB)
+        img = Image.fromarray(frame)
+        image= ImageTk.PhotoImage(image=img)
+        etiq_de_video = tk.Label(self, bg="black")
+        etiq_de_video.place(x=187,y=75)
+        etiq_de_video.configure(image=image)
+        etiq_de_video.image = image
+        etiq_de_video.after(10,self.iniciar)
+        print(score)
+       
+        
+
+
+
+
+    def _crear_componentes(self):
+
+        frame_botones = tk.Frame(self, relief=tk.RAISED, bd=2,bg='black')
+        self.img = tk.PhotoImage(file='imagenes/empezar.png')
+        self.img2 = tk.PhotoImage(file='imagenes/parar.png')
+        self.img3 = tk.PhotoImage(file='imagenes/ajuste.png')
+        self.imag7 = tk.PhotoImage(file='imagenes/home.png')
+        boton_abrir = tk.Button(frame_botones, text='Iniciar',image=self.img,height=90, width=163, bg='black',relief =tk.RAISED ,highlightthickness=2,bd=0)
+        boton_guardar = tk.Button(frame_botones, text='Terminar',image=self.img2,height=90, width=163, bg='black',relief = tk.RAISED,bd=0)
+        boton_ajustes = tk.Button(frame_botones, text= 'Ajustes',image=self.img3,height=90, width=163, bg='black', command=self.ventana_sonido,relief = tk.GROOVE,bd=0)
+        boton_home = tk.Button(frame_botones, text='Home', image=self.imag7,command=self.bienvenido,height=112, width=150, bg='black',bd=0, relief=tk.GROOVE)
+        # Los botones los expandimos de manera horizontal (sticky='we')
+        boton_abrir.grid(row=0, column=0, sticky='we')
+        boton_guardar.grid(row=1, column=0, sticky='we', padx=5, pady=5)
+        boton_ajustes.grid(row = 2, column=0, padx=5, pady=5)
+        boton_home.grid( padx=5, pady=5)
+        # Se coloca el frame de manera vertical
+        frame_botones.grid(row=0, column=0, sticky='ns')
+        # Agregamos el campo de texto, se expandirá por completo el espacio disponible
+        self.campo_video = tk.Frame()
+        self.imag5 = ImageTk.PhotoImage(Image.open('imagenes/sleep.jpg'))
+        lbl = tk.Label(self.campo_video, image=self.imag5).place(x=0, y=0)
+        self.campo_video.grid(row=0, column=1, sticky='nswe')
+        self.iniciar()
+
+if __name__ == '__main__':
+    editor = Editor()
+    editor.mainloop()
