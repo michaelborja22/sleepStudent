@@ -12,6 +12,7 @@ from timeit import default_timer
 from PIL import Image, ImageTk
 import tkinter as tk
 import imutils
+from Musica import *
 
 #Ubicar la ejecución en la carpeta actual del proyecto
 print("UBICADO")
