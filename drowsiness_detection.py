@@ -73,6 +73,7 @@ class Editor(tk.Tk):
         self.ventana_nuevo = tk.Toplevel()
         self.ventana_nuevo.title('Bienvenido')
         self.ventana_nuevo.geometry('600x338')
+        #Con jpg se necesita este metodo
         imag4 = ImageTk.PhotoImage(Image.open('imagenes/BIENVENIDO.jpg'))
         lbl = tk.Label(self.ventana_nuevo, image=imag4).place(x=0, y=0)
         self.ventana_nuevo.mainloop()
@@ -80,8 +81,9 @@ class Editor(tk.Tk):
     def ventana_sonido(self):
         self.ventana_nuevo = tk.Toplevel()
         self.ventana_nuevo.title('Ajuste de Sonido')
+        self.ventana_nuevo.resizable(width=False, height=False)
         self.ventana_nuevo.iconbitmap('imagenes/son.ico')
-        self.ventana_nuevo.geometry('560x287')
+        self.ventana_nuevo.geometry('200x300')
         imag4 = ImageTk.PhotoImage(Image.open('imagenes/fondosonido.jpg'))
         lbl= tk.Label(self.ventana_nuevo,image=imag4).place(x=0, y=0)
         lbl = tk.Label(self.ventana_nuevo, text='Cambiar sonido',bg='pink').place(x=0, y=0)
@@ -198,6 +200,8 @@ class Editor(tk.Tk):
         etiq_de_video.image = image
         etiq_de_video.after(10,self.iniciar)
         print(score)
+
+
 
     def _crear_componentes(self):
 
