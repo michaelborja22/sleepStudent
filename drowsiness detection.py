@@ -62,8 +62,8 @@ class Editor(tk.Tk):
         # Configuración tamaño mínimo de la venta
         self.rowconfigure(0, minsize=600, weight=1)
         # Configuración mínima de la segunda columna
-        self.columnconfigure(1, minsize=600, weight=1)
-        # Atributo de campo de imagen
+        self.columnconfigure(1, minsize=700, weight=1)
+        self.resizable(width=False, height=False)
         # Creación de componentes
         Boton1 = tk.Button(self,text='Iniciar')
         self._crear_componentes()
@@ -192,16 +192,11 @@ class Editor(tk.Tk):
         img = Image.fromarray(frame)
         image= ImageTk.PhotoImage(image=img)
         etiq_de_video = tk.Label(self, bg="black")
-        etiq_de_video.place(x=187,y=75)
+        etiq_de_video.place(x=190,y=75)
         etiq_de_video.configure(image=image)
         etiq_de_video.image = image
         etiq_de_video.after(10,self.iniciar)
         print(score)
-       
-        
-
-
-
 
     def _crear_componentes(self):
 
